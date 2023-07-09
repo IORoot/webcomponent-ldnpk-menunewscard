@@ -24,17 +24,19 @@ html += /* html */`
             /* Variables  */
             --backgroundColour: var(--color-stone-50);
             --foregroundColour: var(--color-stone-950);
-            --hoverColour:      var(--color-emerald-500);
-            --glyphColour:      var(--color-cyan-500);
-            --glyphSize:        calc(100% - 2rem);
-        }
-        
-        #menunewscard {
-            background: var(--backgroundColour);
+            --hoverColour:      var(--color-purple-500);
         }
 
-        #glyph {
-            fill: var(--glyphColour);
+        #menunewscard {
+            background-color: var(--backgroundColour);
+        }
+
+        #description {
+            color: var(--foregroundColour);
+            background-color: var(--backgroundColour);
+        }
+
+        #image {
             -webkit-transform: scale(1);
             transform: scale(1);
             -webkit-transition: .3s ease-in-out;
@@ -46,7 +48,6 @@ html += /* html */`
         ╰──────────────────────────────────────────────────────────╯ */
 
         #menunewscard:hover {
-            background: var(--glyphColour);
             color: var(--hoverColour);
         }
 
@@ -55,8 +56,7 @@ html += /* html */`
             color: var(--hoverColour);
         }
 
-        #menunewscard:hover #glyph {
-            fill: var(--foregroundColour);
+        #menunewscard:hover #image {
             -webkit-transform: scale(1.2);
             transform: scale(1.2);
         }
@@ -79,13 +79,11 @@ html += /* html */`
         relative
         flex
         flex-row                    md:flex-col
-        gap-4                       md:gap-0
+        gap-4                       md:gap-2
         
         rounded-lg
         shadow-lg
         overflow-hidden
-        p-2
-        pb-2                        md:pb-12
         h-full
         
         duration-500
@@ -97,63 +95,25 @@ html += /* html */`
 
         
             <div id="description" class="
-                mb-auto
-                order-2             md:order-1
+                
+                p-4
                 relative
+                grow-0
                 z-40">
                 <h3 class="
                     text-sm         md:text-sm">
                 </h3>
-                <h4 class="
-                    text-xs         md:text-xs 
-                    text-stone-500">
-                </h4>
             </div>
 
 
             <div id="image" class="
                 mx-auto
                 z-30 
-                drop-shadow-xl
+                h-full
                 hidden              md:block
-                order-3">
+                ">
                 <slot></slot>
             </div>
-
-
-            <div id="glyph" class="
-                block               md:block            lg:block
-                absolute            md:absolute         lg:absolute         
-                w-10                md:w-4              lg:w-4/5       
-                h-10                md:h-4              lg:h-4/5        
-                order-1                                 lg:order-2
-                top-2               md:top-auto         lg:top-auto            
-                                                        lg:left-4   xl:left-0
-                right-2                                 lg:right-4  xl:right-0
-                                    md:bottom-4         lg:bottom-4   
-                                    md:mx-auto
-                z-20">
-                <slot name="glyph"></slot>
-            </div>
-
-
-            <svg xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 144 144" 
-                fill="none" 
-                class="absolute
-                w-20                md:w-40     lg:w-80
-                h-20                md:h-40     lg:h-80
-                bottom-0
-                right-0">
-                <g opacity="0.25">
-                <path d="M144 48L48 144H144V48Z" fill="black" fill-opacity="0.2"/>
-                <path d="M144 24L24 144H144V24Z" fill="black" fill-opacity="0.2"/>
-                <path d="M144 0L0 144H144V0Z" fill="black" fill-opacity="0.2"/>
-                </g>
-
-            </svg>
-
-        
     </a>
 
 
@@ -193,9 +153,6 @@ class MenuNewsCard extends HTMLElement {
         // Set Title
         this.shadowRoot.querySelector("h3").innerHTML = this.titleAttribute
 
-        // Set Subtitle
-        this.shadowRoot.querySelector("h4").innerHTML = this.subtitleAttribute
-
         // HREF
         element.href = this.hrefAttribute;
 
@@ -204,6 +161,16 @@ class MenuNewsCard extends HTMLElement {
 
         // rel
         element.rel = this.relAttribute;
+
+        //layout
+        // text position top/bottom
+        if (this.layoutAttribute &&
+            this.layoutAttribute === 'reversed') {
+            this.shadowRoot.querySelector("#description")
+                .classList.add('order-2');
+            this.shadowRoot.querySelector("#image")
+                .classList.add('order-1');
+        }
     }
 
     // ╭───────────────────────────────────────────────────────╮
@@ -218,10 +185,6 @@ class MenuNewsCard extends HTMLElement {
         return this.getAttribute("title");
     }
 
-    get subtitleAttribute() {
-        return this.getAttribute("subtitle");
-    }
-
     get hrefAttribute() {
         return this.getAttribute("href");
     }
@@ -232,6 +195,10 @@ class MenuNewsCard extends HTMLElement {
 
     get relAttribute() {
         return this.getAttribute("rel");
+    }
+
+    get layoutAttribute() {
+        return this.getAttribute("layout");
     }
 
 }
